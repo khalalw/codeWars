@@ -6,6 +6,9 @@
 
 function deleteNth(arr, n) {
   let filteredArr = [];
+  let countInArray = function (array, num) {
+    return array.filter(item => item === num).length;
+  }
 
   for (let i in arr) {
     if (countInArray(filteredArr, arr[i]) < n) {
@@ -16,9 +19,4 @@ function deleteNth(arr, n) {
   return filteredArr;
 }
 
-function countInArray(array, num) {
-  return array.filter(item => item === num).length;
-}
-
-deleteNth([20, 37, 20, 21], 1); // [20,37, 21]
-deleteNth([1, 1, 3, 3, 7, 2, 2, 2, 2], 3); // [1, 1, 2, 2, 3, 2, 2, 2]
+deleteNth([37, 29, 29, 37, 29, 29, 29, 44, 38, 29, 44, 37, 37, 29, 29, 37, 44, 37, 29, 37, 37, 37, 29, 44, 38, 37], 9)
