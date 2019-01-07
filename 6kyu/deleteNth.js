@@ -8,13 +8,13 @@ function deleteNth(arr, n) {
   let filteredArr = [];
   let countInArray = function (array, num) {
     return array.filter(item => item === num).length;
-  }
+  };
 
-  for (let i in arr) {
+  arr.forEach(function (v, i) {
     if (countInArray(filteredArr, arr[i]) < n) {
       filteredArr.push(arr[i]);
     }
-  }
+  });
 
   return filteredArr;
 }
