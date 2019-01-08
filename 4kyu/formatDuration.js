@@ -1,42 +1,38 @@
-function buildFormat(val, unit) {
-  if (val > 0) {
-    return val + ' ' + unit + (val > 1 ? 's' : '') + ', ';
-  }
-  return '';
-}
+// The resulting expression is made of components like 4 seconds, 1 year, etc.In general, a positive integer and one of the valid units of time, separated by a space.The unit of time is used in plural
+// if the integer is greater than 1.
+
+// The components are separated by a comma and a space(", ").Except the last component, which is separated by " and ", just like it would be written in English.
+
+// A more significant units of time will occur before than a least significant one.Therefore, 1 second and 1 year is not correct, but 1 year and 1 second is.
+
+// Different components have different unit of times.So there is not repeated units like in 5 seconds and 1 second.
+
+// A component will not appear at all
+// if its value happens to be zero.Hence, 1 minute and 0 seconds is not valid, but it should be just 1 minute.
+
+// A unit of time must be used "as much as possible".It means that the
+// function should not
+// return 61 seconds, but 1 minute and 1 second instead.Formally, the duration specified by of a component must not be greater than any valid more significant unit of time.
 
 function formatDuration(seconds) {
-  if (!seconds) return 'now';
+  var time = {
+      year: 31536000,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+      second: 1
+    },
+    res = [];
 
-  let secs = seconds;
-  const NUM_SEC_PER_MIN = 60;
-  const NUM_SEC_PER_HR = NUM_SEC_PER_MIN * 60;
-  const NUM_SEC_PER_DAY = NUM_SEC_PER_HR * 24;
-  const NUM_SEC_PER_YEAR = NUM_SEC_PER_DAY * 365;
+  if (seconds === 0) return 'now';
 
-  let numYears = Math.floor(secs / NUM_SEC_PER_YEAR);
-  secs -= numYears * NUM_SEC_PER_YEAR;
-  let numDays = Math.floor(secs / NUM_SEC_PER_DAY);
-  secs -= numDays * NUM_SEC_PER_DAY;
-  let numHrs = Math.floor(secs / NUM_SEC_PER_HR);
-  secs -= numHrs * NUM_SEC_PER_HR;
-  let numMins = Math.floor(secs / NUM_SEC_PER_MIN);
-  let numSecs = secs - numMins * NUM_SEC_PER_MIN;
-
-  let durationStr = buildFormat(numYears, 'year');
-  durationStr += buildFormat(numDays, 'day');
-  durationStr += buildFormat(numHrs, 'hour');
-  durationStr += buildFormat(numMins, 'minute');
-  durationStr += buildFormat(numSecs, 'second');
-
-  // trim last one
-  let index = durationStr.lastIndexOf(', ');
-  durationStr = durationStr.substring(0, index);
-
-  // replace the second last , with and
-  index = durationStr.lastIndexOf(', ');
-  if (index > 0) {
-    durationStr = durationStr.substring(0, index) + ' and ' + durationStr.substring(index + 2);
+  for (var key in time) {
+    if (seconds >= time[key]) {
+      var val = Math.floor(seconds / time[key]);
+      res.push(val += val > 1 ? ' ' + key + 's' : ' ' + key);
+      seconds = seconds % time[key];
+    }
   }
-  return durationStr;
+
+  return res.length > 1 ? res.join(', ').replace(/,([^,]*)$/, ' and' + '$1') : res[0]
 }
